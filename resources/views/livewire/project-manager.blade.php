@@ -17,7 +17,7 @@
                 </div>
             </div>
 
-            {{-- Task Manager Component එක --}}
+            {{-- Task Manager Component --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 @livewire('task-manager', ['project' => $selectedProject], key('tasks-view-'.$selectedProject->id))
             </div>
@@ -56,8 +56,8 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($projects as $project)
                         <tr class="hover:bg-gray-50/70 transition-colors">
-                            <td class="px-6 py-4">
-                                {{-- Project නම මත ක්ලික් කළ විටත් Tasks වෙත යාමට --}}
+                            <td wire:click="openTaskView({{ $project->id }})" class="px-6 py-4">
+                                {{-- When the user clicks on the project name, open the task view --}}
                                 <button wire:click="openTaskView({{ $project->id }})"
                                     class="font-medium text-indigo-600 hover:underline">
                                     {{ $project->name }}
@@ -70,12 +70,6 @@
                                 <div class="flex flex-col gap-1.5">
                                     <div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase">
                                         <span>Progress</span>
-                                        <span>{{ $project->tasks_count > 0 ? round(($project->completed_tasks_count / $project->tasks_count) * 100) : 0 }}%</span>
-                                    </div>
-                                    <div class="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-indigo-500 rounded-full"
-                                             style="width: {{ $project->tasks_count > 0 ? ($project->completed_tasks_count / $project->tasks_count) * 100 : 0 }}%">
-                                        </div>
                                     </div>
                                     <span class="text-[10px] text-gray-400">
                                         {{ $project->completed_tasks_count }}/{{ $project->tasks_count }} Tasks
@@ -107,7 +101,7 @@
             </table>
         </div>
 
-        {{-- Add & Edit Modals (Project එකට පමණි) --}}
+        {{-- Add & Edit Modals --}}
         <x-modals.add-project :show="$showAddModal" />
         <x-modals.edit-project :show="$showEditModal" />
     @endif

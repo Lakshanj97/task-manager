@@ -10,7 +10,7 @@ class ProjectManager extends Component
 
     // View state
     public bool $viewingTasks = false;
-    
+
     // Modal visibility
     public bool $showAddModal  = false;
     public bool $showEditModal = false;
@@ -40,7 +40,7 @@ class ProjectManager extends Component
     }
 
     /**
-     * නැවත Project List එකට පැමිණීම
+     * Back to projects List
      */
     public function backToProjects(): void
     {
