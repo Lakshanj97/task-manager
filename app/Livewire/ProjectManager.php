@@ -7,6 +7,10 @@ use Livewire\Component;
 
 class ProjectManager extends Component
 {
+
+    // View state
+    public bool $viewingTasks = false;
+    
     // Modal visibility
     public bool $showAddModal  = false;
     public bool $showEditModal = false;
@@ -27,6 +31,22 @@ class ProjectManager extends Component
     // Alert messages
     public ?string $errorMessage   = null;
     public ?string $successMessage = null;
+
+    public function openTaskView(int $projectId): void
+    {
+        $this->selectedProjectId = $projectId;
+        $this->viewingTasks = true;
+        $this->clearMessages();
+    }
+
+    /**
+     * නැවත Project List එකට පැමිණීම
+     */
+    public function backToProjects(): void
+    {
+        $this->viewingTasks = false;
+        $this->selectedProjectId = null;
+    }
 
 
 

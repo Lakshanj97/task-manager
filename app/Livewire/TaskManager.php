@@ -5,9 +5,12 @@ namespace App\Livewire;
 use App\Models\Task;
 use App\Models\Project;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class TaskManager extends Component
 {
+    use WithPagination;
+
     /** @var Project */
 
     // Selected project
@@ -62,16 +65,20 @@ class TaskManager extends Component
         $this->newTaskTitle   = '';
         $this->successMessage = 'Task added!';
         $this->errorMessage   = null;
+        $this->resetPage();
     }
 
     // Toggle the completion status of a task
-    public function toggleTask(int $taskId): void
+   public function toggleTask(int $taskId): void
     {
-        /** @var Task|null $task */
         $task = $this->project->tasks()->find($taskId);
 
         if ($task) {
-            $task->update(['is_completed' => !$task->is_completed]);
+            // Explicitly toggle the boolean value
+            $task->is_completed = !$task->is_completed;
+            $task->save();
+
+            $this->successMessage = $task->is_completed ? 'Task marked as completed!' : 'Task marked as pending!';
         }
     }
 
@@ -139,13 +146,14 @@ class TaskManager extends Component
         $this->successMessage = null;
     }
 
-   // Render the tasks for the selected project
+    // Render the tasks for the selected project
     public function render()
     {
+        // Paginate පාවිච්චි කර 10 බැගින් පෙන්වීම
         $tasks = $this->project->tasks()
             ->orderBy('is_completed', 'asc')
-            ->orderBy('created_at', 'asc')
-            ->get();
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('livewire.task-manager', compact('tasks'));
     }
