@@ -9,6 +9,8 @@ use Livewire\Component;
 class TaskManager extends Component
 {
     /** @var Project */
+
+    // Selected project
     public Project $project;
 
     // New task form
@@ -45,10 +47,13 @@ class TaskManager extends Component
         ];
     }
 
+    // Create a new task for the selected project
     public function createTask(): void
     {
+        // Validate the new task title
         $this->validateOnly('newTaskTitle');
 
+        // Create the new task associated with the current project ( Use the relationship to create the task in Project Model)
         $this->project->tasks()->create([
             'title'        => trim($this->newTaskTitle),
             'is_completed' => false,
@@ -59,6 +64,7 @@ class TaskManager extends Component
         $this->errorMessage   = null;
     }
 
+    // Toggle the completion status of a task
     public function toggleTask(int $taskId): void
     {
         /** @var Task|null $task */
@@ -69,11 +75,14 @@ class TaskManager extends Component
         }
     }
 
+    // Start editing a task
     public function startEditingTask(int $taskId): void
     {
+        // Find the task to be edited
         /** @var Task|null $task */
         $task = $this->project->tasks()->find($taskId);
 
+        // If the task exists, set the editing properties
         if ($task) {
             $this->editingTaskId  = $taskId;
             $this->editTaskTitle  = $task->title;
@@ -82,6 +91,7 @@ class TaskManager extends Component
         }
     }
 
+    // Update a task
     public function updateTask(): void
     {
         $this->validateOnly('editTaskTitle');
@@ -93,15 +103,20 @@ class TaskManager extends Component
             $task->update(['title' => trim($this->editTaskTitle)]);
         }
 
+        // Cancel editing state
         $this->cancelEditingTask();
+
+        // Set the success message
         $this->successMessage = 'Task updated!';
     }
 
+    // Cancel editing a task
     public function cancelEditingTask(): void
     {
         $this->reset(['editingTaskId', 'editTaskTitle']);
     }
 
+    // Delete a task
     public function deleteTask(int $taskId): void
     {
         // Store the task in a variable
@@ -115,15 +130,16 @@ class TaskManager extends Component
         $this->successMessage = 'Task deleted!';
         $this->errorMessage   = null;
     }
+
+
+    // Clear messages
     public function clearMessages(): void
     {
         $this->errorMessage   = null;
         $this->successMessage = null;
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\View
-     */
+   // Render the tasks for the selected project
     public function render()
     {
         $tasks = $this->project->tasks()

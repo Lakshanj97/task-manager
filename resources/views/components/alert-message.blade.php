@@ -1,3 +1,4 @@
+{{-- Use Props to pass data to the component --}}
 @props(['type' => 'success', 'message', 'onDismiss'])
 
 @php
